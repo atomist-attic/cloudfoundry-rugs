@@ -1,0 +1,14 @@
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-20170713214604"
+generator:
+  name: "NewRugProject"
+  group: "atomist"
+  artifact: "rug-rugs"
+  version: "0.32.1"
+  parameters:
+    - "version": "0.1.0"
+    - "owner": "atomist"
+    - "description": "Rugs for mananging applications on CloudFoundry"
+

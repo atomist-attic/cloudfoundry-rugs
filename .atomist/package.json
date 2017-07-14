@@ -1,0 +1,51 @@
+{
+  "license": "Apache-2.0",
+  "keywords": [
+    "atomist",
+    "rug"
+  ],
+  "dependencies": {
+    "@atomist/rugs": "^1.0.0-m.5"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.41",
+    "@types/power-assert": "^1.4.29",
+    "espower-typescript": "^8.0.0",
+    "mocha": "^3.4.2",
+    "power-assert": "^1.4.4",
+    "supervisor": "^0.12.0",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
+  },
+  "directories": {
+    "test": "mocha"
+  },
+  "scripts": {
+    "autotest": "supervisor -q -n exit -e ts -x npm -- run mocha",
+    "clean": "npm run clean-js ; rug clean",
+    "clean-js": "find . -type d \\( -path ./node_modules -o -path ./target \\) -prune -o -type f -name '*.js' -print0 | xargs -0 rm -f",
+    "compile": "tsc -p .",
+    "distclean": "npm run clean ; rm -rf node_modules",
+    "lint": "tslint '**/*.ts' --exclude 'node_modules/**' --exclude 'target/**' -t verbose",
+    "mocha": "mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts'",
+    "test": "npm run mocha && rug test"
+  },
+  "atomist": {
+    "requires": "[1.0.0-m.4,2.0.0)",
+    "extensions": {
+      "com.atomist.rug:rug-function-http": "[0.7.3,1.0.0)"
+    }
+  },
+  "name": "@atomist/cloudfoundry-rugs",
+  "version": "0.1.0",
+  "author": "atomist",
+  "description": "Atomist Rugs from atomist/cloudfoundry-rugs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atomist/cloudfoundry-rugs.git"
+  },
+  "homepage": "https://github.com/atomist/cloudfoundry-rugs#readme",
+  "bugs": {
+    "url": "https://github.com/atomist/cloudfoundry-rugs/issues"
+  }
+}
