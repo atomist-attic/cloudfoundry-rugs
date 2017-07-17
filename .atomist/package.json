@@ -5,7 +5,8 @@
     "rug"
   ],
   "dependencies": {
-    "@atomist/rugs": "^1.0.0-m.5"
+    "@atomist/rugs": "^1.0.0-m.5",
+    "@atomist/slack-messages": "0.6.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
@@ -31,13 +32,14 @@
     "test": "npm run mocha && rug test"
   },
   "atomist": {
-    "requires": "[1.0.0-m.4,2.0.0)",
+    "requires": "[1.0.0-m.5,2.0.0)",
     "extensions": {
-      "com.atomist.rug:rug-function-http": "[0.7.3,1.0.0)"
+      "com.atomist.rug:rug-functions-cloudfoundry": "[0.3.0,1.0.0)",
+      "com.atomist.rug:rug-function-http": "[0.8.0,1.0.0)"
     }
   },
   "name": "@atomist/cloudfoundry-rugs",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "author": "atomist",
   "description": "Atomist Rugs from atomist/cloudfoundry-rugs",
   "repository": {

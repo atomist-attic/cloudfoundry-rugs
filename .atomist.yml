@@ -12,3 +12,17 @@ generator:
     - "owner": "atomist"
     - "description": "Rugs for mananging applications on CloudFoundry"
 
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-20170713214604"
+editor:
+  name: "AddTypeScriptCommandHandler"
+  group: "atomist"
+  artifact: "rug-rugs"
+  version: "0.32.1"
+  parameters:
+    - "handlerName": "ScaleApplication"
+    - "intent": "scale cf app"
+    - "description": "Scale a CloudFoundry Application"
+
