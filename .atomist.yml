@@ -26,3 +26,38 @@ editor:
     - "intent": "scale cf app"
     - "description": "Scale a CloudFoundry Application"
 
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-m.5"
+editor:
+  name: "AddTypeScriptCommandHandler"
+  group: "atomist"
+  artifact: "rug-rugs"
+  version: "0.32.1"
+  origin:
+    repo: "git@github.com:atomist/cloudfoundry-rugs.git"
+    branch: "master"
+    sha: "c010c5a"
+  parameters:
+    - "handlerName": "EnableTravisDeploy"
+    - "description": "enable Cloud Foundry deployments on Travis CI"
+    - "intent": "enable travis cf"
+
+---
+kind: "operation"
+client: "com.atomist:rug"
+version: "1.0.0-m.5"
+editor:
+  name: "AddTypeScriptEditor"
+  group: "atomist"
+  artifact: "rug-rugs"
+  version: "0.32.1"
+  origin:
+    repo: "git@github.com:atomist/cloudfoundry-rugs.git"
+    branch: "master"
+    sha: "c010c5a*"
+  parameters:
+    - "editorName": "AddTravisDeploy"
+    - "description": "add files needed to deploy to Cloud Foundry from Travis CI"
+

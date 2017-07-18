@@ -1,12 +1,25 @@
 {
+  "name": "@atomist/cloudfoundry-rugs",
+  "description": "Atomist Rugs for Cloud Foundry",
+  "version": "0.2.2",
+  "author": "Atomist",
   "license": "Apache-2.0",
   "keywords": [
     "atomist",
+    "cloud-foundry",
     "rug"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atomist/cloudfoundry-rugs.git"
+  },
+  "homepage": "https://github.com/atomist/cloudfoundry-rugs#readme",
+  "bugs": {
+    "url": "https://github.com/atomist/cloudfoundry-rugs/issues"
+  },
   "dependencies": {
-    "@atomist/rugs": "^1.0.0-m.5",
-    "@atomist/slack-messages": "0.6.0"
+    "@atomist/rugs": "^1.0.0-m.6",
+    "@atomist/slack-messages": "0.7.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
@@ -35,19 +48,8 @@
     "requires": "[1.0.0-m.5,2.0.0)",
     "extensions": {
       "com.atomist.rug:rug-functions-cloudfoundry": "[0.3.0,1.0.0)",
-      "com.atomist.rug:rug-function-http": "[0.8.0,1.0.0)"
+      "com.atomist.rug:rug-function-http": "[0.8.0,1.0.0)",
+      "com.atomist.rug:rug-functions-travis": "[0.18.0,1.0.0)"
     }
-  },
-  "name": "@atomist/cloudfoundry-rugs",
-  "version": "0.2.1",
-  "author": "atomist",
-  "description": "Atomist Rugs from atomist/cloudfoundry-rugs",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/atomist/cloudfoundry-rugs.git"
-  },
-  "homepage": "https://github.com/atomist/cloudfoundry-rugs#readme",
-  "bugs": {
-    "url": "https://github.com/atomist/cloudfoundry-rugs/issues"
   }
 }

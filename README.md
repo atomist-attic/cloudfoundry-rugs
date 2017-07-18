@@ -9,6 +9,32 @@ This [Rug][rug] project contains Rugs for mananging applications on CloudFoundry
 
 ## Rugs
 
+### AddTravisDeploy
+
+add files needed to deploy to Cloud Foundry from Travis CI
+
+#### Prerequisites
+
+Put your editor prerequisites here.
+
+#### Parameters
+
+This Rug takes following parameters.
+
+Name | Required | Default | Description
+-----|----------|---------|------------
+`inputParameter` | Yes | | Example input parameter
+
+#### Running
+
+Run this Rug as follows:
+
+```
+$ rug edit -C ../project/directory -l AddTravisDeploy inputParameter='some value'
+```
+
+Explain what your editor does here.
+
 ## Support
 
 General support questions should be discussed in the `#support`
