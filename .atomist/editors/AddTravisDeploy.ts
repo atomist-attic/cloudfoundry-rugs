@@ -75,6 +75,8 @@ export class AddTravisDeploy implements EditProject {
     public cfSpace: string;
 
     public edit(project: Project) {
+        const name = (this.applicationName === "$projectName") ? project.name : this.applicationName;
+
         const travisYaml = project.findFile(".travis.yml");
         if (!travisYaml) {
             console.log(`project ${project.name} has no '.travis.yaml' file`);
@@ -93,7 +95,6 @@ export class AddTravisDeploy implements EditProject {
         if (project.fileExists("manifest.yml")) {
             console.log(`project ${project.name} already has a manifest.yml, not overwriting`);
         } else {
-            const name = (this.applicationName === "$projectName") ? project.name : this.applicationName;
             project.addFile("manifest.yml", manifestYamlContent(name, project.name));
         }
 
@@ -102,7 +103,7 @@ export class AddTravisDeploy implements EditProject {
             let applicationYamlContent = applicationYaml.content;
             applicationYamlContent = applicationYamlContent.split("${DOMAIN:development}")
                 .join(this.cfSpace + ":${vcap.application.name:${spring.application.name:"
-                +  this.applicationName + "}}");
+                +  name + "}}");
             applicationYaml.setContent(applicationYamlContent);
         }
     }

@@ -1,7 +1,7 @@
 {
   "name": "@atomist/cloudfoundry-rugs",
   "description": "Atomist Rugs for Cloud Foundry",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "author": "Atomist",
   "license": "Apache-2.0",
   "keywords": [
