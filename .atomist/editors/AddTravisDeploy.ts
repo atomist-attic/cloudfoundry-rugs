@@ -27,17 +27,17 @@ export class AddTravisDeploy implements EditProject {
         },
         cfUser: {
             displayName: "Cloud Foundry User",
-            description: "email address of Cloud Foundry user with deploy permissions",
+            description: "encrypted user name (email address) of Cloud Foundry user with deploy permissions",
             pattern: Pattern.any,
-            validInput: "a valid Cloud Foundry user email address with deploy permissions",
+            validInput: "an encrypted valid Cloud Foundry user email address with deploy permissions",
             minLength: 1,
-            maxLength: 100,
+            maxLength: 1000,
         },
         cfPassword: {
             displayName: "Cloud Foundry Password",
             description: "encrypted Cloud Foundry password for user with deploy permissions",
             pattern: Pattern.any,
-            validInput: "an encrypted password for a Cloud Foundry user with deploy permissions",
+            validInput: "an encrypted valid password for a Cloud Foundry user with deploy permissions",
             minLength: 1,
             maxLength: 1000,
         },
@@ -122,13 +122,12 @@ function travisDeployContent(
     return `deploy:
   provider: cloudfoundry
   api: https://api.run.pivotal.io
-  username: ${user}
+  username:
+    secure: ${user}
   password:
     secure: ${password}
   organization: ${organization}
   space: ${space}
-  file:
-  - target/${artifact}-$TRAVIS_TAG.jar
   skip_cleanup: true
   on:
     tags: true

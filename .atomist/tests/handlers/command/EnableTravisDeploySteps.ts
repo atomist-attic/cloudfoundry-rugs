@@ -22,8 +22,6 @@ Then("you get a plan to encrypt and update", (w: CommandHandlerScenarioWorld) =>
     const expected = `Enabling deployments to Cloud Foundry on Travis CI for ` +
         `<https://github.com/${slug}|\`${slug}\`>...`;
     const message = (w.plan().messages[0] as ResponseMessage).body;
-    console.log(`expected:${expected}`);
-    console.log(`message :${message}`);
     const cre = w.plan().instructions[0] as CommandRespondable<Execute>;
     const instruction = cre.instruction;
     const ip = instruction.parameters as any;
@@ -37,11 +35,10 @@ Then("you get a plan to encrypt and update", (w: CommandHandlerScenarioWorld) =>
         && instruction.kind === "execute"
         && ip.repo === params.repo
         && ip.owner === params.owner
-        && ip.content === "#{secret://team?path=cloudfoundry/password}"
+        && ip.content === "#{secret://team?path=cloudfoundry/user}"
         && success.kind === "respond"
-        && success.name === "ReceiveEncryptedPassword"
+        && success.name === "ReceiveEncryptedUser"
         && sp.applicationName === params.applicationName
-        && sp.cfUser === "#{secret://team?path=cloudfoundry/user}"
         && sp.cfOrg === params.cfOrg
         && sp.cfSpace === params.cfSpace
         && sp.repo === params.repo
