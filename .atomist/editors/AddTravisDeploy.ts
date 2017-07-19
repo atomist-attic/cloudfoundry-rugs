@@ -96,6 +96,14 @@ export class AddTravisDeploy implements EditProject {
             const name = (this.applicationName === "$projectName") ? project.name : this.applicationName;
             project.addFile("manifest.yml", manifestYamlContent(name, project.name));
         }
+
+        const applicationYaml = project.findFile("src/main/resources/application.yml");
+        if (applicationYaml) {
+            let applicationYamlContent = applicationYaml.content;
+            applicationYamlContent = applicationYamlContent.split("${DOMAIN:development}")
+                .join(this.cfSpace + ":${vcap.application.name:${spring.application.name}}");
+            applicationYaml.setContent(applicationYamlContent);
+        }
     }
 }
 

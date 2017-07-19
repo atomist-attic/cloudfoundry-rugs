@@ -20,3 +20,4 @@ Feature: Add Cloud Foundry deployment files
     Then file at manifest.yml should exist
     Then file at manifest.yml should contain - name: the-replacements
     Then file at manifest.yml should contain path: target/project-scenario-world-VERSION.jar
+    Then dump files
