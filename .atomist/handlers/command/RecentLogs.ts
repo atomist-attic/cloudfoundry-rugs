@@ -24,10 +24,10 @@ import { error } from "../Handlers";
 import { Configuration, configured, Value } from "../../config/Configuration";
 
 /**
- * A Scale a CloudFoundry Application.
+ * A Scale a Cloud Foundry Application.
  */
-@CommandHandler("RecentLogs", "Get recent logs of a CloudFoundry application")
-@Tags("cloundfoundry")
+@CommandHandler("RecentLogs", "Get recent logs of a Cloud Foundry application")
+@Tags("cloudfoundry")
 @Intent("cf recentlogs")
 @Secrets(
     "secret://team?path=cloudfoundry/user",
@@ -40,9 +40,9 @@ export class RecentLogs implements HandleCommand {
 
     @Parameter({
         displayName: "Application Name",
-        description: "Name of CloudFoundry Application",
+        description: "Name of Cloud Foundry Application",
         pattern: Pattern.any,
-        validInput: "a valid CloudFoundry application name",
+        validInput: "a valid Cloud Foundry application name",
         minLength: 1,
         maxLength: 100,
         required: true,
