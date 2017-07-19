@@ -101,7 +101,8 @@ export class AddTravisDeploy implements EditProject {
         if (applicationYaml) {
             let applicationYamlContent = applicationYaml.content;
             applicationYamlContent = applicationYamlContent.split("${DOMAIN:development}")
-                .join(this.cfSpace + ":${vcap.application.name:${spring.application.name}}");
+                .join(this.cfSpace + ":${vcap.application.name:${spring.application.name:"
+                +  this.applicationName + "}}");
             applicationYaml.setContent(applicationYamlContent);
         }
     }
