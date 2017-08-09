@@ -1,7 +1,6 @@
 # cloudfoundry-rugs
 
 [![Build Status](https://travis-ci.org/atomist/cloudfoundry-rugs.svg?branch=master)](https://travis-ci.org/atomist/cloudfoundry-rugs)
-[![Slack Status](https://join.atomist.com/badge.svg)](https://join.atomist.com)
 
 [rug]: http://docs.atomist.com/
 
