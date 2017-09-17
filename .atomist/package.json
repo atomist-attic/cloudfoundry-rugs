@@ -1,7 +1,7 @@
 {
   "name": "@atomist/cloudfoundry-rugs",
   "description": "Atomist Rugs for Cloud Foundry",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "author": "Atomist",
   "license": "Apache-2.0",
   "keywords": [
@@ -18,8 +18,10 @@
     "url": "https://github.com/atomist/cloudfoundry-rugs/issues"
   },
   "dependencies": {
-    "@atomist/rugs": "^1.0.0-m.6",
-    "@atomist/slack-messages": "0.7.0"
+    "@atomist/rugs": "^1.0.0-m.7",
+    "@atomist/slack-messages": "0.7.0",
+    "@atomist/rug": "^1.0.0-m.7",
+    "@atomist/cortex": "^1.0.0-m.6"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
@@ -42,10 +44,12 @@
     "distclean": "npm run clean ; rm -rf node_modules",
     "lint": "tslint '**/*.ts' --exclude 'node_modules/**' --exclude 'target/**' -t verbose",
     "mocha": "mocha --compilers ts:espower-typescript/guess 'mocha/**/*.ts'",
-    "test": "npm run mocha && rug test"
+    "test": "npm run mocha && rug test",
+    "stage": "build/publish-to-team",
+    "lint-fix": "npm run lint -- --fix"
   },
   "atomist": {
-    "requires": "[1.0.0-m.5,2.0.0)",
+    "requires": "[1.0.0-m.7,2.0.0)",
     "extensions": {
       "com.atomist.rug:rug-functions-cloudfoundry": "[0.3.0,1.0.0)",
       "com.atomist.rug:rug-function-http": "[0.8.0,1.0.0)",
