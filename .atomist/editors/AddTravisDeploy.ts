@@ -115,9 +115,9 @@ function manifestYamlContent(name: string, artifact: string): string {
     return `---
 applications:
 - name: ${name}
-  memory: 512M
+  memory: 1024M
   instances: 1
-  path: target/${artifact}-VERSION.jar
+  path: PATH
 
 `;
 }
@@ -140,8 +140,7 @@ function travisDeployContent(
   space: ${space}
   skip_cleanup: true
   on:
-    tags: true
-    condition: $TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$
-before_deploy: sed -i -e "s/VERSION/$TRAVIS_TAG/g" manifest.yml
+    branch: master
+before_deploy: p=$(ls -1 target/*.jar | head -n 1) && sed -i "s/PATH/$p/g" manifest.yml
 `;
 }
