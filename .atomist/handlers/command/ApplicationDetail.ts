@@ -1,12 +1,15 @@
-import { CommandHandler,
+import {
+    CommandHandler,
     Intent,
     MappedParameter,
     Parameter,
     ParseJson,
     ResponseHandler,
     Secrets,
-    Tags } from "@atomist/rug/operations/Decorators";
-import { CommandPlan,
+    Tags,
+} from "@atomist/rug/operations/Decorators";
+import {
+    CommandPlan,
     DirectedMessage,
     HandleCommand,
     HandlerContext,
@@ -14,13 +17,15 @@ import { CommandPlan,
     MessageMimeType,
     MessageMimeTypes,
     Response,
-    ResponseMessage } from "@atomist/rug/operations/Handlers";
+    ResponseMessage,
+} from "@atomist/rug/operations/Handlers";
 import { Pattern } from "@atomist/rug/operations/RugOperation";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
 import { error } from "../Handlers";
 
 import { Configuration, configured, Value } from "../../config/Configuration";
+import { CloudFoundryParameters, qualifiedAppName } from "./CloudFoundryParameters";
 
 /**
  * A Scale a Cloud Foundry Application.
@@ -37,21 +42,14 @@ import { Configuration, configured, Value } from "../../config/Configuration";
 )
 export class ApplicationDetail implements HandleCommand {
 
-    @Parameter({
-        displayName: "Application Name",
-        description: "Name of Cloud Foundry Application",
-        pattern: Pattern.any,
-        validInput: "a valid Cloud Foundry application name",
-        minLength: 1,
-        maxLength: 100,
-        required: true,
-    })
+    @Parameter(CloudFoundryParameters.app)
     public app: string;
+
+    @Parameter(CloudFoundryParameters.space)
+    public space: string;
 
     @Value("organization", "atomist")
     public organization: string;
-    @Value("space", "development")
-    public space: string;
 
     @MappedParameter("atomist://correlation_id")
     public corrId: string;
@@ -59,14 +57,16 @@ export class ApplicationDetail implements HandleCommand {
     public handle(context: HandlerContext): CommandPlan {
         const plan = new CommandPlan();
 
+        const appPhrase = qualifiedAppName(this.app, this.organization, this.space);
+
         plan.add({
             instruction: {
                 kind: "execute",
                 name: "cf-info",
                 parameters: this,
             },
-            onSuccess: {kind: "respond", name: "ApplicationDetailResponder", parameters: this},
-            onError: error(`Failed to retrieve application info for \`${this.app}\``, this.corrId),
+            onSuccess: { kind: "respond", name: "ApplicationDetailResponder", parameters: this },
+            onError: error(`Failed to retrieve application info for ${appPhrase}`, this.corrId),
         });
 
         return plan;
@@ -87,7 +87,7 @@ class ApplicationDetailResponder implements HandleResponse<any> {
     })
     public app: string;
 
-    public handle(@ParseJson response: Response<any>): CommandPlan {
+    public handle( @ParseJson response: Response<any>): CommandPlan {
         const detail = response.body;
         console.log(JSON.stringify(detail, null, 4));
         const routes = detail.urls.map(r => slack.url("http://" + r + "/info", r)).join(", ");
@@ -96,39 +96,39 @@ class ApplicationDetailResponder implements HandleResponse<any> {
             text: `Application details for \`${this.app}\``,
             attachments: [{
                 fallback: `Application details for \`${this.app}\``,
-                mrkdwn_in: [ "value" ],
+                mrkdwn_in: ["value"],
                 footer: detail.buildpack,
                 fields: [{
-                        title: "Name",
-                        value: this.app,
-                        short: true,
-                    },
-                    {
-                        title: "Requested State",
-                        value: detail.requestedState.toLowerCase(),
-                        short: true,
-                    },
-                    {
-                        title: "Usage",
-                        value: `${detail.memoryLimit} mb x ${detail.instances} instances`,
-                        short: true,
-                    },
-                    {
-                        title: "Routes",
-                        value: routes,
-                        short: true,
-                    },
-                    {
-                        title: "Last Uploaded",
-                        value: detail.lastUploaded,
-                        short: true,
-                    },
-                    {
-                        title: "Stack",
-                        value: detail.stack,
-                        short: true,
-                    }],
+                    title: "Name",
+                    value: this.app,
+                    short: true,
                 },
+                {
+                    title: "Requested State",
+                    value: detail.requestedState.toLowerCase(),
+                    short: true,
+                },
+                {
+                    title: "Usage",
+                    value: `${detail.memoryLimit} mb x ${detail.instances} instances`,
+                    short: true,
+                },
+                {
+                    title: "Routes",
+                    value: routes,
+                    short: true,
+                },
+                {
+                    title: "Last Uploaded",
+                    value: detail.lastUploaded,
+                    short: true,
+                },
+                {
+                    title: "Stack",
+                    value: detail.stack,
+                    short: true,
+                }],
+            },
             ],
         };
 

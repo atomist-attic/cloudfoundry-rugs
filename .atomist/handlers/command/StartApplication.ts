@@ -5,6 +5,7 @@ import { Pattern } from "@atomist/rug/operations/RugOperation";
 import { error, success } from "../Handlers";
 
 import { Configuration, configured, Value } from "../../config/Configuration";
+import { CloudFoundryParameters, qualifiedAppName } from "./CloudFoundryParameters";
 
 /**
  * Stop a Cloud Foundry application.
@@ -21,21 +22,14 @@ import { Configuration, configured, Value } from "../../config/Configuration";
 )
 export class StartApplication implements HandleCommand {
 
-    @Parameter({
-        displayName: "Application Name",
-        description: "Name of Cloud Foundry Application",
-        pattern: Pattern.any,
-        validInput: "a valid Cloud Foundry application name",
-        minLength: 1,
-        maxLength: 100,
-        required: true,
-    })
+    @Parameter(CloudFoundryParameters.app)
     public app: string;
+
+    @Parameter(CloudFoundryParameters.space)
+    public space: string;
 
     @Value("organization", "atomist")
     public organization: string;
-    @Value("space", "development")
-    public space: string;
 
     @MappedParameter("atomist://correlation_id")
     public corrId: string;
@@ -43,14 +37,16 @@ export class StartApplication implements HandleCommand {
     public handle(context: HandlerContext): CommandPlan {
         const plan = new CommandPlan();
 
+        const appPhrase = qualifiedAppName(this.app, this.organization, this.space);
+
         plan.add({
             instruction: {
                 kind: "execute",
                 name: "cf-start",
                 parameters: this,
             },
-            onSuccess: success(`Successfully started \`${this.app}\``),
-            onError: error(`Failed to start \`${this.app}\``, this.corrId),
+            onSuccess: success(`Successfully started ${appPhrase}`),
+            onError: error(`Failed to start ${appPhrase}`, this.corrId),
         });
 
         return plan;

@@ -1,16 +1,19 @@
 import { CommandHandler, Intent, MappedParameter, Parameter, Secrets, Tags } from "@atomist/rug/operations/Decorators";
-import { CommandPlan,
+import {
+    CommandPlan,
     CommandRespondable,
     Execute,
     HandleCommand,
     HandlerContext,
     MappedParameters,
-    ResponseMessage } from "@atomist/rug/operations/Handlers";
+    ResponseMessage,
+} from "@atomist/rug/operations/Handlers";
 import { Pattern } from "@atomist/rug/operations/RugOperation";
 
 import { error, success } from "../Handlers";
 
 import { Configuration, configured, Value } from "../../config/Configuration";
+import { CloudFoundryParameters, qualifiedAppName } from "./CloudFoundryParameters";
 
 /**
  * Scale a Cloud Foundry application.
@@ -27,16 +30,11 @@ import { Configuration, configured, Value } from "../../config/Configuration";
 )
 export class ScaleApplication implements HandleCommand {
 
-    @Parameter({
-        displayName: "Application Name",
-        description: "Name of Cloud Foundry Application",
-        pattern: Pattern.any,
-        validInput: "a valid Cloud Foundry application name",
-        minLength: 1,
-        maxLength: 100,
-        required: true,
-    })
+    @Parameter(CloudFoundryParameters.app)
     public app: string;
+
+    @Parameter(CloudFoundryParameters.space)
+    public space: string;
 
     @Parameter({
         displayName: "Instances",
@@ -51,8 +49,6 @@ export class ScaleApplication implements HandleCommand {
 
     @Value("organization", "atomist")
     public organization: string;
-    @Value("space", "development")
-    public space: string;
 
     @MappedParameter("atomist://correlation_id")
     public corrId: string;
@@ -60,14 +56,16 @@ export class ScaleApplication implements HandleCommand {
     public handle(context: HandlerContext): CommandPlan {
         const plan = new CommandPlan();
 
+        const appPhrase = qualifiedAppName(this.app, this.organization, this.space);
+
         const instruction: CommandRespondable<Execute> = {
             instruction: {
                 kind: "execute",
                 name: "cf-scale",
                 parameters: this,
             },
-            onSuccess: success(`Successfully scaled \`${this.app}\` to ${this.instances} instances`),
-            onError: error(`Failed to scale \`${this.app}\` to ${this.instances} instances`, this.corrId),
+            onSuccess: success(`Successfully scaled ${appPhrase} to ${this.instances} instances`),
+            onError: error(`Failed to scale ${appPhrase} to ${this.instances} instances`, this.corrId),
         };
 
         plan.add(instruction);

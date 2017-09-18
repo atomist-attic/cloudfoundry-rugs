@@ -1,12 +1,15 @@
-import { CommandHandler,
+import {
+    CommandHandler,
     Intent,
     MappedParameter,
     Parameter,
     ParseJson,
     ResponseHandler,
     Secrets,
-    Tags } from "@atomist/rug/operations/Decorators";
-import { CommandPlan,
+    Tags,
+} from "@atomist/rug/operations/Decorators";
+import {
+    CommandPlan,
     DirectedMessage,
     HandleCommand,
     HandlerContext,
@@ -15,13 +18,15 @@ import { CommandPlan,
     MessageMimeTypes,
     Response,
     ResponseMessage,
-    UserAddress } from "@atomist/rug/operations/Handlers";
+    UserAddress,
+} from "@atomist/rug/operations/Handlers";
 import { Pattern } from "@atomist/rug/operations/RugOperation";
 import * as slack from "@atomist/slack-messages/SlackMessages";
 
 import { error } from "../Handlers";
 
 import { Configuration, configured, Value } from "../../config/Configuration";
+import { CloudFoundryParameters, qualifiedAppName } from "./CloudFoundryParameters";
 
 /**
  * A Scale a Cloud Foundry Application.
@@ -38,21 +43,14 @@ import { Configuration, configured, Value } from "../../config/Configuration";
 )
 export class RecentLogs implements HandleCommand {
 
-    @Parameter({
-        displayName: "Application Name",
-        description: "Name of Cloud Foundry Application",
-        pattern: Pattern.any,
-        validInput: "a valid Cloud Foundry application name",
-        minLength: 1,
-        maxLength: 100,
-        required: true,
-    })
+    @Parameter(CloudFoundryParameters.app)
     public app: string;
+
+    @Parameter(CloudFoundryParameters.space)
+    public space: string;
 
     @Value("organization", "atomist")
     public organization: string;
-    @Value("space", "development")
-    public space: string;
 
     @MappedParameter("atomist://correlation_id")
     public corrId: string;
@@ -63,14 +61,16 @@ export class RecentLogs implements HandleCommand {
     public handle(context: HandlerContext): CommandPlan {
         const plan = new CommandPlan();
 
+        const appPhrase = qualifiedAppName(this.app, this.organization, this.space);
+
         plan.add({
             instruction: {
                 kind: "execute",
                 name: "cf-recentlogs",
                 parameters: this,
             },
-            onSuccess: {kind: "respond", name: "RecentLogsResponder", parameters: this},
-            onError: error(`Failed to retrieve logs for \`${this.app}\``, this.corrId),
+            onSuccess: { kind: "respond", name: "RecentLogsResponder", parameters: this },
+            onError: error(`Failed to retrieve logs for ${appPhrase}`, this.corrId),
         });
 
         return plan;
@@ -101,7 +101,7 @@ class RecentLogsResponder implements HandleResponse<any> {
     })
     public requester: string;
 
-    public handle(@ParseJson response: Response<any>): CommandPlan {
+    public handle( @ParseJson response: Response<any>): CommandPlan {
         const plan = new CommandPlan();
         const lines = response.body;
         const message: slack.SlackMessage = {
@@ -117,7 +117,7 @@ class RecentLogsResponder implements HandleResponse<any> {
         const chunks = [];
         const chunk = 5;
         for (i = 0, j = lines.length; i < j; i += chunk) {
-            chunks.push(lines.slice( i, i + chunk));
+            chunks.push(lines.slice(i, i + chunk));
         }
         chunks.forEach(c => {
             plan.add(new DirectedMessage(slack.codeBlock(slack.escape(c.join("\n"))),
