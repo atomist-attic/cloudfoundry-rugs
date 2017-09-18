@@ -4,9 +4,9 @@ import {
 } from "@atomist/rug/test/handler/Core";
 
 const params = {
-    applicationName: "i-use-to-want-to-be-a-real-man",
-    cfOrg: "the-nashville-sound",
-    cfSpace: "hope-the-high-road",
+    app: "i-use-to-want-to-be-a-real-man",
+    organization: "the-nashville-sound",
+    space: "hope-the-high-road",
     repo: "the-400-unit",
     owner: "jason-isbell",
     corrId: "0234ef3-445ad30b9c-239cfad023de01a0",
@@ -38,9 +38,9 @@ Then("you get a plan to encrypt and update", (w: CommandHandlerScenarioWorld) =>
         && ip.content === "#{secret://team?path=cloudfoundry/user}"
         && success.kind === "respond"
         && success.name === "ReceiveEncryptedUser"
-        && sp.applicationName === params.applicationName
-        && sp.cfOrg === params.cfOrg
-        && sp.cfSpace === params.cfSpace
+        && sp.applicationName === params.app
+        && sp.cfOrg === params.organization
+        && sp.cfSpace === params.space
         && sp.repo === params.repo
         && sp.owner === params.owner
         && sp.corrId === params.corrId;

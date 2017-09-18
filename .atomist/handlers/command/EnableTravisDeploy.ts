@@ -66,13 +66,13 @@ const travisParams = {
 export class EnableTravisDeploy implements HandleCommand {
 
     @Parameter(AddTravisDeploy.Parameters.applicationName)
-    public applicationName: string = "$projectName";
+    public app: string = "$projectName";
 
     @Parameter(AddTravisDeploy.Parameters.cfOrg)
-    public cfOrg: string;
+    public organization: string;
 
     @Parameter(AddTravisDeploy.Parameters.cfSpace)
-    public cfSpace: string;
+    public space: string;
 
     @MappedParameter(MappedParameters.GITHUB_REPOSITORY)
     public repo: string;
@@ -99,9 +99,9 @@ export class EnableTravisDeploy implements HandleCommand {
             kind: "respond",
             name: ReceiveEncryptedUser.Name,
             parameters: {
-                applicationName: this.applicationName,
-                cfOrg: this.cfOrg,
-                cfSpace: this.cfSpace,
+                applicationName: this.app,
+                cfOrg: this.organization,
+                cfSpace: this.space,
                 repo: this.repo,
                 owner: this.owner,
                 corrId: this.corrId,

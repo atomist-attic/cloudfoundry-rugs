@@ -92,35 +92,31 @@ export class AddTravisDeploy implements EditProject {
             travisYaml.setContent(updatedTravisYaml);
         }
 
-        if (project.fileExists("manifest.yml")) {
+        const manifestPath = "manifest.yml";
+        if (project.fileExists(manifestPath)) {
             console.log(`project ${project.name} already has a manifest.yml, not overwriting`);
         } else {
-            project.addFile("manifest.yml", manifestYamlContent(name, project.name));
+            project.copyEditorBackingFileOrFail(manifestPath);
         }
+
+        const prepManifestPath = "src/main/scripts/prep-manifest.bash";
+        if (project.fileExists(prepManifestPath)) {
+            project.deleteFile(prepManifestPath);
+        }
+        project.copyEditorBackingFileOrFail(prepManifestPath);
 
         const applicationYaml = project.findFile("src/main/resources/application.yml");
         if (applicationYaml) {
             let applicationYamlContent = applicationYaml.content;
             applicationYamlContent = applicationYamlContent.split("${DOMAIN:development}")
                 .join(this.cfSpace + ":${vcap.application.name:${spring.application.name:"
-                +  name + "}}");
+                + name + "}}");
             applicationYaml.setContent(applicationYamlContent);
         }
     }
 }
 
 export const addTravisDeploy = new AddTravisDeploy();
-
-function manifestYamlContent(name: string, artifact: string): string {
-    return `---
-applications:
-- name: ${name}
-  memory: 1024M
-  instances: 1
-  path: PATH
-
-`;
-}
 
 function travisDeployContent(
     user: string,
@@ -129,18 +125,31 @@ function travisDeployContent(
     space: string,
     artifact: string,
 ): string {
-    return `deploy:
-  provider: cloudfoundry
-  api: https://api.run.pivotal.io
-  username:
-    secure: ${user}
-  password:
-    secure: ${password}
-  organization: ${organization}
-  space: ${space}
-  skip_cleanup: true
-  on:
-    branch: master
-before_deploy: p=$(ls -1 target/*.jar | head -n 1) && sed -i "s,PATH,$p/," manifest.yml
+    return `before_deploy: bash src/main/scripts/prep-manifest.bash
+deploy:
+  - provider: cloudfoundry
+    api: https://api.run.pivotal.io
+    username:
+      secure: ${user}
+    password:
+      secure: ${password}
+    organization: ${organization}
+    space: ${space}
+    skip_cleanup: true
+    on:
+      branch: master
+      condition: "-z $TRAVIS_TAG"
+  - provider: cloudfoundry
+    api: https://api.run.pivotal.io
+    username:
+      secure: ${user}
+    password:
+      secure: ${password}
+    organization: ${organization}
+    space: production
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$"
 `;
 }

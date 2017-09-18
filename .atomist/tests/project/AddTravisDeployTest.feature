@@ -16,8 +16,8 @@ Feature: Add Cloud Foundry deployment files
     Then file at .travis.yml should contain organization: minneapolis
     Then file at .travis.yml should contain space: first-avenue
     Then file at .travis.yml should contain branch: master
-    Then file at .travis.yml should contain before_deploy: p=
+    Then file at .travis.yml should contain before_deploy:
     Then file at manifest.yml should exist
-    Then file at manifest.yml should contain - name: the-replacements
-    Then file at manifest.yml should contain path: PATH
+    Then file at manifest.yml should contain - name: "@NAME@"
+    Then file at manifest.yml should contain path: "@PATH@"
     # Then dump files
