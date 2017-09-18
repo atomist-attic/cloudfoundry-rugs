@@ -141,6 +141,6 @@ function travisDeployContent(
   skip_cleanup: true
   on:
     branch: master
-before_deploy: p=$(ls -1 target/*.jar | head -n 1) && sed -i "s/PATH/$p/g" manifest.yml
+before_deploy: p=$(ls -1 target/*.jar | head -n 1) && sed -i "s,PATH,$p/," manifest.yml
 `;
 }
