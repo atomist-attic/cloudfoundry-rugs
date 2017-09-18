@@ -150,6 +150,6 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
-      condition: "$TRAVIS_TAG =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$"
+      condition: "$TRAVIS_TAG =~ ^[0-9]+\\\\.[0-9]+\\\\.[0-9]+$"
 `;
 }
